@@ -23,7 +23,7 @@ export type ChartPoint = {
   /** Bucket center / raw timestamp in ms */
   at: number;
   /** Aggregated value (avg for weight, sum for push-ups, etc.) */
-  kg: number;
+  value: number;
   /** Number of entries aggregated into this bucket */
   count: number;
 };

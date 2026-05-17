@@ -1,31 +1,18 @@
-import type { WeightEntry } from "@/types";
+import type { PushupEntry } from "@/types";
 import {
   bucketKey,
   type ChartPoint,
   type RangeWindow,
 } from "@/lib/chart/range";
 
-// Re-export shared types/helpers so existing call sites can keep importing
-// from `@/lib/weight/bucket`.
-export type {
-  Bucket,
-  ChartPoint,
-  Range,
-  RangeWindow,
-} from "@/lib/chart/range";
-export {
-  autoBucket,
-  formatBucketDetail,
-  formatBucketLabel,
-  resolveRange,
-} from "@/lib/chart/range";
-
 /**
- * Aggregate weight entries into chart points by averaging kg within each
- * bucket. Push-ups (sum) live in `lib/pushups/bucket.ts`.
+ * Aggregate push-up entries into chart points by **summing** reps within
+ * each bucket. Mirrors `bucketEntries` in `lib/weight/bucket.ts` but with a
+ * sum aggregator (vs avg) — total reps per day reads more naturally than an
+ * average over scattered set logs.
  */
-export function bucketEntries(
-  entries: WeightEntry[],
+export function bucketPushupEntries(
+  entries: PushupEntry[],
   window: RangeWindow
 ): ChartPoint[] {
   const { from, to, bucket } = window;
@@ -40,11 +27,7 @@ export function bucketEntries(
     return filtered
       .slice()
       .sort((a, b) => a.at - b.at)
-      .map((e) => ({
-        at: e.at,
-        value: Math.round(e.kg * 10) / 10,
-        count: 1,
-      }));
+      .map((e) => ({ at: e.at, value: e.reps, count: 1 }));
   }
 
   const groups = new Map<number, { sum: number; count: number }>();
@@ -52,10 +35,10 @@ export function bucketEntries(
     const k = bucketKey(e.at, bucket);
     const g = groups.get(k);
     if (g) {
-      g.sum += e.kg;
+      g.sum += e.reps;
       g.count += 1;
     } else {
-      groups.set(k, { sum: e.kg, count: 1 });
+      groups.set(k, { sum: e.reps, count: 1 });
     }
   }
 
@@ -63,7 +46,7 @@ export function bucketEntries(
     .sort(([a], [b]) => a - b)
     .map(([at, g]) => ({
       at,
-      value: Math.round((g.sum / g.count) * 10) / 10,
+      value: g.sum,
       count: g.count,
     }));
 }

@@ -5,7 +5,6 @@ import {
   CartesianGrid,
   Line,
   LineChart,
-  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -13,22 +12,19 @@ import {
 } from "recharts";
 import { Card, CardTitle } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { RangePills } from "./RangePills";
-import { CustomRangePicker } from "./CustomRangePicker";
+import { RangePills } from "@/components/weight/RangePills";
+import { CustomRangePicker } from "@/components/weight/CustomRangePicker";
 import { useCollection } from "@/lib/hooks/useCollection";
-import { useValue } from "@/lib/hooks/useValue";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import {
-  bucketEntries,
   formatBucketDetail,
   formatBucketLabel,
   resolveRange,
   type Range,
-} from "@/lib/weight/bucket";
+} from "@/lib/chart/range";
+import { bucketPushupEntries } from "@/lib/pushups/bucket";
 import { dayKey, parseDayKey } from "@/lib/date";
-import type { Settings, WeightEntry } from "@/types";
-
-const EMPTY: Settings = {};
+import type { PushupEntry } from "@/types";
 
 function pad(n: number) {
   return String(n).padStart(2, "0");
@@ -55,30 +51,33 @@ function ChartTooltip({
   active,
   payload,
   bucketLabel,
-}: TooltipPayload & { bucketLabel: (at: number) => string }) {
+  isAggregated,
+}: TooltipPayload & {
+  bucketLabel: (at: number) => string;
+  isAggregated: boolean;
+}) {
   if (!active || !payload || payload.length === 0) return null;
   const p = payload[0].payload;
   if (!p) return null;
   return (
     <div className="rounded-lg border border-border-default bg-bg-surface px-3 py-2 text-xs shadow-md">
-      <div className="font-semibold text-text-primary">{p.value.toFixed(1)} kg</div>
+      <div className="font-semibold text-text-primary">{p.value} reps</div>
       <div className="text-text-muted">{bucketLabel(p.at)}</div>
-      {p.count > 1 && (
-        <div className="text-text-muted">avg of {p.count} entries</div>
+      {isAggregated && p.count > 1 && (
+        <div className="text-text-muted">
+          sum of {p.count} sets
+        </div>
       )}
     </div>
   );
 }
 
-export function WeightChart() {
-  const { items, hydrated } = useCollection<WeightEntry>(STORAGE_KEYS.weights);
-  const [settings] = useValue<Settings>(STORAGE_KEYS.settings, EMPTY);
+export function PushupChart() {
+  const { items, hydrated } = useCollection<PushupEntry>(STORAGE_KEYS.pushups);
 
   const [range, setRange] = useState<Range>("7D");
   const [customFrom, setCustomFrom] = useState<string>(defaultFromDayString);
   const [customTo, setCustomTo] = useState<string>(todayDayString);
-  // "Now" is captured once at mount — refresh the page to reset. Avoids
-  // calling Date.now() during render and the ensuing re-render churn.
   const [now] = useState(() => Date.now());
 
   const window = useMemo(() => {
@@ -91,24 +90,18 @@ export function WeightChart() {
   }, [range, customFrom, customTo, now]);
 
   const points = useMemo(
-    () => bucketEntries(items, window),
+    () => bucketPushupEntries(items, window),
     [items, window]
   );
 
-  const target = settings.targetKg;
-
-  // Y domain: pad so points + target sit comfortably in the chart
   const yDomain = useMemo<[number, number] | undefined>(() => {
-    if (points.length === 0 && target == null) return undefined;
-    const values: number[] = [];
-    for (const p of points) values.push(p.value);
-    if (target != null) values.push(target);
-    if (values.length === 0) return undefined;
-    const min = Math.min(...values);
+    if (points.length === 0) return undefined;
+    const values = points.map((p) => p.value);
+    const min = Math.min(0, ...values);
     const max = Math.max(...values);
-    const pad = Math.max((max - min) * 0.15, 0.5);
-    return [Math.floor((min - pad) * 10) / 10, Math.ceil((max + pad) * 10) / 10];
-  }, [points, target]);
+    const padded = Math.max((max - min) * 0.15, 5);
+    return [Math.floor(min), Math.ceil(max + padded)];
+  }, [points]);
 
   return (
     <Card>
@@ -138,8 +131,8 @@ export function WeightChart() {
             title="No data in this range"
             description={
               items.length === 0
-                ? "Log a weigh-in to start building your trend."
-                : "Try a wider range or log a fresh entry."
+                ? "Log a set to start building your trend."
+                : "Try a wider range or log a fresh set."
             }
           />
         ) : (
@@ -169,30 +162,17 @@ export function WeightChart() {
                 tick={{ fill: "var(--text-muted)", fontSize: 11 }}
                 stroke="var(--border-default)"
                 width={42}
-                tickFormatter={(v) => `${v}`}
+                allowDecimals={false}
               />
               <Tooltip
                 cursor={{ stroke: "var(--accent)", strokeWidth: 1 }}
                 content={
                   <ChartTooltip
                     bucketLabel={(at) => formatBucketDetail(at, window.bucket)}
+                    isAggregated={window.bucket !== "raw"}
                   />
                 }
               />
-              {target != null && (
-                <ReferenceLine
-                  y={target}
-                  stroke="var(--text-muted)"
-                  strokeDasharray="6 4"
-                  ifOverflow="extendDomain"
-                  label={{
-                    value: `Target ${target.toFixed(1)} kg`,
-                    position: "insideTopRight",
-                    fill: "var(--text-muted)",
-                    fontSize: 11,
-                  }}
-                />
-              )}
               <Line
                 type="monotone"
                 dataKey="value"
