@@ -2,8 +2,10 @@
  * Typed localStorage wrapper with a tiny pub/sub layer so React components can
  * subscribe to changes without a full state-management library.
  *
- * Cross-tab updates piggy-back on the native `storage` event; same-tab updates
- * are dispatched manually since `storage` doesn't fire in the originating tab.
+ * Returned values are reference-stable: the same parsed array/object is handed
+ * back on every `getCollection` / `getValue` call until the underlying raw
+ * string changes. This is required for `useSyncExternalStore` to avoid infinite
+ * re-renders.
  */
 
 type Listener = () => void;
@@ -11,11 +13,21 @@ type Listener = () => void;
 const listeners = new Map<string, Set<Listener>>();
 let crossTabHooked = false;
 
+// Stable empty array — same reference every time, lets useSyncExternalStore
+// see "nothing changed" for keys with no data.
+const EMPTY_ARRAY: readonly unknown[] = Object.freeze([]);
+
+// raw → parsed cache, keyed by storage key
+const parseCache = new Map<string, { raw: string; parsed: unknown }>();
+
 function ensureCrossTabHook() {
   if (crossTabHooked || typeof window === "undefined") return;
   crossTabHooked = true;
   window.addEventListener("storage", (e) => {
-    if (e.key) notify(e.key);
+    if (e.key) {
+      parseCache.delete(e.key);
+      notify(e.key);
+    }
   });
 }
 
@@ -37,12 +49,19 @@ function notify(key: string) {
   listeners.get(key)?.forEach((cb) => cb());
 }
 
-function readRaw(key: string): unknown {
+function readParsed(key: string): unknown {
   if (typeof window === "undefined") return undefined;
+  const raw = window.localStorage.getItem(key);
+  if (raw == null) {
+    if (parseCache.has(key)) parseCache.delete(key);
+    return undefined;
+  }
+  const cached = parseCache.get(key);
+  if (cached && cached.raw === raw) return cached.parsed;
   try {
-    const raw = window.localStorage.getItem(key);
-    if (raw == null) return undefined;
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    parseCache.set(key, { raw, parsed });
+    return parsed;
   } catch {
     return undefined;
   }
@@ -53,21 +72,23 @@ function writeRaw(key: string, value: unknown) {
   try {
     if (value === undefined) {
       window.localStorage.removeItem(key);
+      parseCache.delete(key);
     } else {
-      window.localStorage.setItem(key, JSON.stringify(value));
+      const raw = JSON.stringify(value);
+      window.localStorage.setItem(key, raw);
+      parseCache.set(key, { raw, parsed: value });
     }
     notify(key);
   } catch {
-    // Quota exceeded or storage disabled — silent. UI hooks will keep their
-    // optimistic state and the next read will reflect reality.
+    // Quota exceeded or storage disabled — silent.
   }
 }
 
 // ---------- Collection (array) helpers ----------
 
 export function getCollection<T>(key: string): T[] {
-  const v = readRaw(key);
-  return Array.isArray(v) ? (v as T[]) : [];
+  const v = readParsed(key);
+  return (Array.isArray(v) ? v : EMPTY_ARRAY) as T[];
 }
 
 export function setCollection<T>(key: string, items: T[]) {
@@ -99,7 +120,7 @@ export function removeItem<T extends { id: string }>(key: string, id: string) {
 // ---------- Singleton-value helpers ----------
 
 export function getValue<T>(key: string): T | undefined {
-  return readRaw(key) as T | undefined;
+  return readParsed(key) as T | undefined;
 }
 
 export function setValue<T>(key: string, value: T) {

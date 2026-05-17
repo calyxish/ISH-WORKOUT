@@ -12,7 +12,7 @@ export default function ShellLayout({
       <Sidebar />
       <div className="flex min-h-dvh flex-1 flex-col">
         <MobileTopBar />
-        <main className="flex-1 px-4 py-5 md:px-8 md:py-8">
+        <main className="flex-1 px-4 pb-24 pt-5 md:px-8 md:py-8 md:pb-8">
           <div className="mx-auto w-full max-w-3xl">{children}</div>
         </main>
         <BottomNav />

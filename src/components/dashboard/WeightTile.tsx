@@ -7,9 +7,11 @@ import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { relativeTime } from "@/lib/date";
 import type { WeightEntry, Settings } from "@/types";
 
+const EMPTY_SETTINGS: Settings = {};
+
 export function WeightTile() {
   const { items, hydrated } = useCollection<WeightEntry>(STORAGE_KEYS.weights);
-  const [settings] = useValue<Settings>(STORAGE_KEYS.settings, {});
+  const [settings] = useValue<Settings>(STORAGE_KEYS.settings, EMPTY_SETTINGS);
 
   if (!hydrated) return <TileSkeleton href="/weight" label="Weight" />;
 
