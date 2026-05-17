@@ -1,16 +1,15 @@
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Card, CardTitle } from "@/components/ui/Card";
+import { TodayTodos } from "@/components/todos/TodayTodos";
+
+export const metadata = { title: "Todos" };
 
 export default function TodosPage() {
   return (
     <>
-      <PageHeader title="Todos" subtitle="One simple list per day." />
-      <Card>
-        <CardTitle>Coming in Phase 5</CardTitle>
-        <p className="mt-2 text-sm text-text-muted">
-          Add, check, edit, and archive todos with automatic midnight rollover.
-        </p>
-      </Card>
+      <PageHeader title="Todos" subtitle="One list per day. Resets at midnight." />
+      <div className="space-y-8">
+        <TodayTodos />
+      </div>
     </>
   );
 }
