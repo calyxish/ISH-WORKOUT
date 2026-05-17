@@ -11,12 +11,14 @@ function Home(props: IconProps) {
   );
 }
 
-function Scale(props: IconProps) {
+function Dumbbell(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <rect x="3" y="4" width="18" height="16" rx="3" />
-      <path d="M8 9h8" />
-      <path d="M12 14v3" />
+      <path d="M4 8v8" />
+      <path d="M7 6v12" />
+      <path d="M17 6v12" />
+      <path d="M20 8v8" />
+      <path d="M7 12h10" />
     </svg>
   );
 }
@@ -30,21 +32,17 @@ function Check(props: IconProps) {
   );
 }
 
-function Fork(props: IconProps) {
+function Bowl(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M7 3v8a3 3 0 0 0 6 0V3" />
-      <path d="M10 11v10" />
-      <path d="M17 3v18" />
-      <path d="M17 12c2 0 3-1 3-3V5" />
-    </svg>
-  );
-}
-
-function Drop(props: IconProps) {
-  return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z" />
+      {/* steam */}
+      <path d="M9 3c0 1.5 1 1.5 1 3" />
+      <path d="M13 3c0 1.5 1 1.5 1 3" />
+      {/* bowl */}
+      <path d="M3 10h18" />
+      <path d="M4 10a8 8 0 0 0 16 0" />
+      {/* rim */}
+      <path d="M2 19h20" />
     </svg>
   );
 }
@@ -66,10 +64,9 @@ export type NavItem = {
 
 export const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/weight", label: "Weight", icon: Scale },
-  { href: "/todos", label: "Todos", icon: Check },
-  { href: "/meals", label: "Meals", icon: Fork },
-  { href: "/water", label: "Water", icon: Drop },
+  { href: "/gym", label: "Gym", icon: Dumbbell },
+  { href: "/todos", label: "Todo", icon: Check },
+  { href: "/diet", label: "Diet", icon: Bowl },
 ];
 
 export const SETTINGS_ITEM: NavItem = {

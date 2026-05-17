@@ -13,7 +13,7 @@ export function WeightTile() {
   const { items, hydrated } = useCollection<WeightEntry>(STORAGE_KEYS.weights);
   const [settings] = useValue<Settings>(STORAGE_KEYS.settings, EMPTY_SETTINGS);
 
-  if (!hydrated) return <TileSkeleton href="/weight" label="Weight" />;
+  if (!hydrated) return <TileSkeleton href="/gym/weight" label="Weight" />;
 
   const sorted = [...items].sort((a, b) => b.at - a.at);
   const latest = sorted[0];
@@ -22,7 +22,7 @@ export function WeightTile() {
   if (!latest) {
     return (
       <Tile
-        href="/weight"
+        href="/gym/weight"
         label="Weight"
         primary={<span className="text-text-muted">No data yet</span>}
         secondary="Log your first weigh-in"
@@ -36,7 +36,7 @@ export function WeightTile() {
 
   return (
     <Tile
-      href="/weight"
+      href="/gym/weight"
       label="Weight"
       primary={
         <>

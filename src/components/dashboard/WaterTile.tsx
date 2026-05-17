@@ -17,7 +17,7 @@ export function WaterTile() {
   );
   const [settings] = useValue<Settings>(STORAGE_KEYS.settings, EMPTY_SETTINGS);
 
-  if (!hydrated) return <TileSkeleton href="/water" label="Water today" />;
+  if (!hydrated) return <TileSkeleton href="/diet/water" label="Water today" />;
 
   const today = dayKey();
   const todayEntry = items.find((w) => w.day === today);
@@ -26,7 +26,7 @@ export function WaterTile() {
 
   return (
     <Tile
-      href="/water"
+      href="/diet/water"
       label="Water today"
       primary={
         <>

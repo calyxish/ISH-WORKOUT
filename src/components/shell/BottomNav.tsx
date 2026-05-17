@@ -16,7 +16,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label="Primary"
-      className="sticky bottom-0 z-30 grid grid-cols-6 gap-1 border-t border-border-default bg-bg-primary/95 px-2 pb-[env(safe-area-inset-bottom)] pt-1 backdrop-blur md:hidden"
+      className="sticky bottom-0 z-30 grid grid-cols-5 gap-1 border-t border-border-default bg-bg-primary/95 px-2 pb-[env(safe-area-inset-bottom)] pt-1 backdrop-blur md:hidden"
     >
       {MOBILE_ITEMS.map((item) => {
         const Icon = item.icon;
