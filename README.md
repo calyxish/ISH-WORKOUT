@@ -53,15 +53,39 @@ The app is built in **8 phases** + a version-control phase. See [IMPLEMENTATION_
 
 | Phase | Status |
 |---|---|
-| 1 — Foundation (shell, theme, logo, PWA) | ✅ in review |
-| 2 — Storage + dashboard | ⏳ |
-| 3 — Weight entry + target | ⏳ |
-| 4 — Weight graph | ⏳ |
-| 5 — Daily todos | ⏳ |
-| 6 — Meal times | ⏳ |
-| 7 — Water tracking | ⏳ |
-| 8 — Polish + deploy | ⏳ |
+| 1 — Foundation (shell, theme, logo, PWA) | ✅ |
+| 2 — Storage + dashboard | ✅ |
+| 3 — Weight entry + target | ✅ |
+| 4 — Weight graph | ✅ |
+| 5 — Daily todos | ✅ |
+| 6 — Meal times | ✅ |
+| 7 — Water tracking | ✅ |
+| 8 — Polish + deploy | ✅ |
 | 9 — Version control | ⏳ |
+
+## Deploying to Vercel
+
+The project is a stock Next.js app with no custom server requirements — Vercel will pick it up automatically.
+
+**Easiest path (GitHub integration):**
+
+1. Visit [vercel.com/new](https://vercel.com/new).
+2. Import the `ISH-WORKOUT` GitHub repo.
+3. Leave all defaults — Vercel auto-detects Next.js 16, sets the build command to `next build`, output to `.next/`.
+4. Click **Deploy**. First build takes ~1 minute. Every push to `main` redeploys.
+
+**CLI alternative:**
+
+```bash
+npx vercel        # one-time: log in, link to a project
+npx vercel --prod # deploy production
+```
+
+No environment variables are required — the app is fully client-side.
+
+## Data portability
+
+Everything lives in `localStorage`, so it's per-device. Use **Settings → Data → Export JSON** to save a backup or move data to another device, then **Import JSON** on the new one.
 
 ## License
 

@@ -20,15 +20,15 @@ A personal life-management PWA. Built in **8 build phases** plus a **version-con
 
 | # | Phase | What ships | Status |
 |---|---|---|---|
-| 1 | **Foundation** | Next.js + TS + Tailwind v4; CSS-variable theme + dark mode; `ThemeScript` (no FOUC) + `ThemeToggle`; hand-coded SVG `<Mark />` + `<Logo />`; favicon + apple-icon + PWA icons (192/512/maskable); `manifest.ts`; service worker registered in production; responsive shell (desktop sidebar + mobile top bar / bottom nav); dashboard + stub pages for weight/todos/meals/water/settings. | ✅ in review |
-| 2 | **Storage + dashboard** | Typed `lib/storage` (`getCollection`, `pushItem`, `updateItem`, `removeItem`, SSR-safe); `useCollection` hook; date utilities (`startOfDay`, range bucketing); dashboard cards showing today's snapshot per feature, with empty states. | ⏳ |
-| 3 | **Weight entry + target** | `/weight` route: number input + auto-timestamped "Log weight"; recent-entries list (edit / delete); set target weight; delta-to-target display. | ⏳ |
-| 4 | **Weight graph** | Recharts line chart; range pills **1H / 24H / 7D / 30D / 1Y / All / Custom**; target as dashed reference line; bucketing per range (raw ≤24H, daily avg week+, monthly avg year). Custom range = two date pickers. | ⏳ |
-| 5 | **Daily todos** | `/todos`: add / check / edit / delete; "today" view + previous-days history (read-only); automatic midnight rollover (read-time); progress count. | ⏳ |
-| 6 | **Meal times** | `/meals`: add meal (optional label, time defaults to now, editable); today's timeline; previous-days history. | ⏳ |
-| 7 | **Water tracking** | `/water`: +/− cup buttons, configurable daily goal, progress ring; daily reset at midnight; history kept. | ⏳ |
-| 8 | **Polish + deploy** | Settings (target weight, water goal, theme, **export/import JSON**); a11y pass (keyboard, focus rings, aria-labels); responsive sweep; deploy to Vercel. | ⏳ |
-| 9 | **Version control** | Create public GitHub repo `ISH-WORKOUT`; split phases 1–8 into 8 issues / 8 branches / 8 PRs per the proper-VC workflow; one PR at a time, waiting for review/merge approval between each. | ⏳ |
+| 1 | **Foundation** | Next.js + TS + Tailwind v4; CSS-variable theme + dark mode; `ThemeScript` (no FOUC) + `ThemeToggle`; hand-coded SVG `<Mark />` + `<Logo />`; favicon + apple-icon + PWA icons (192/512/maskable); `manifest.ts`; service worker registered in production; responsive shell (desktop sidebar + mobile top bar / bottom nav); dashboard + stub pages for weight/todos/meals/water/settings. | ✅ |
+| 2 | **Storage + dashboard** | Typed `lib/storage` (`getCollection`, `pushItem`, `updateItem`, `removeItem`, SSR-safe); `useCollection` hook; date utilities (`startOfDay`, range bucketing); dashboard cards showing today's snapshot per feature, with empty states. | ✅ |
+| 3 | **Weight entry + target** | `/weight` route: number input + auto-timestamped "Log weight"; recent-entries list (edit / delete); set target weight; delta-to-target display. | ✅ |
+| 4 | **Weight graph** | Recharts line chart; range pills **1H / 24H / 7D / 30D / 1Y / All / Custom**; target as dashed reference line; bucketing per range (raw ≤24H, daily avg week+, monthly avg year). Custom range = two date pickers. | ✅ |
+| 5 | **Daily todos** | `/todos`: add / check / edit / delete; "today" view + previous-days history (read-only); automatic midnight rollover (read-time); progress count. | ✅ |
+| 6 | **Meal times** | `/meals`: add meal (optional label, time defaults to now, editable); today's timeline; previous-days history. | ✅ |
+| 7 | **Water tracking** | `/water`: +/− cup buttons, configurable daily goal, progress ring; daily reset at midnight; history kept. | ✅ |
+| 8 | **Polish + deploy** | Settings (target weight, water goal, theme, **export/import JSON**); a11y pass (keyboard, focus rings, aria-labels); responsive sweep; deploy to Vercel. | ✅ |
+| 9 | **Version control** | Create public GitHub repo `ISH-WORKOUT`; split phases 1–8 into 8 issues / 8 branches / 8 PRs per the proper-VC workflow; one PR at a time, waiting for review/merge approval between each. | ✅ in review |
 
 ## Verification before Phase 9
 
