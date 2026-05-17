@@ -47,7 +47,7 @@ function defaultFromDayString() {
 type TooltipPayload = {
   active?: boolean;
   payload?: Array<{
-    payload?: { at: number; kg: number; count: number };
+    payload?: { at: number; value: number; count: number };
   }>;
 };
 
@@ -61,7 +61,7 @@ function ChartTooltip({
   if (!p) return null;
   return (
     <div className="rounded-lg border border-border-default bg-bg-surface px-3 py-2 text-xs shadow-md">
-      <div className="font-semibold text-text-primary">{p.kg.toFixed(1)} kg</div>
+      <div className="font-semibold text-text-primary">{p.value.toFixed(1)} kg</div>
       <div className="text-text-muted">{bucketLabel(p.at)}</div>
       {p.count > 1 && (
         <div className="text-text-muted">avg of {p.count} entries</div>
@@ -101,7 +101,7 @@ export function WeightChart() {
   const yDomain = useMemo<[number, number] | undefined>(() => {
     if (points.length === 0 && target == null) return undefined;
     const values: number[] = [];
-    for (const p of points) values.push(p.kg);
+    for (const p of points) values.push(p.value);
     if (target != null) values.push(target);
     if (values.length === 0) return undefined;
     const min = Math.min(...values);
@@ -164,7 +164,7 @@ export function WeightChart() {
                 minTickGap={32}
               />
               <YAxis
-                dataKey="kg"
+                dataKey="value"
                 domain={yDomain ?? ["auto", "auto"]}
                 tick={{ fill: "var(--text-muted)", fontSize: 11 }}
                 stroke="var(--border-default)"
@@ -195,7 +195,7 @@ export function WeightChart() {
               )}
               <Line
                 type="monotone"
-                dataKey="kg"
+                dataKey="value"
                 stroke="var(--accent)"
                 strokeWidth={2.5}
                 dot={{
