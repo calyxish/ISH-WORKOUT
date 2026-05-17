@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { TargetCard } from "@/components/weight/TargetCard";
 import { WaterGoalCard } from "@/components/water/WaterGoalCard";
+import { PushupTargetCard } from "@/components/pushups/PushupTargetCard";
 import { useCollection } from "@/lib/hooks/useCollection";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import type { WeightEntry } from "@/types";
@@ -15,9 +16,10 @@ export function GoalsCard() {
   }, [items]);
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <TargetCard latestKg={latestKg} />
       <WaterGoalCard />
+      <PushupTargetCard />
     </div>
   );
 }
