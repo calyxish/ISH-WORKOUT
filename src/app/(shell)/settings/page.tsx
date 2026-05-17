@@ -1,16 +1,19 @@
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Card, CardTitle } from "@/components/ui/Card";
+import { ThemeCard } from "@/components/settings/ThemeCard";
+import { GoalsCard } from "@/components/settings/GoalsCard";
+import { DataCard } from "@/components/settings/DataCard";
+
+export const metadata = { title: "Settings" };
 
 export default function SettingsPage() {
   return (
     <>
-      <PageHeader title="Settings" subtitle="Goals, theme, and data." />
-      <Card>
-        <CardTitle>Coming in Phase 8</CardTitle>
-        <p className="mt-2 text-sm text-text-muted">
-          Target weight, water goal, theme picker, and JSON export/import.
-        </p>
-      </Card>
+      <PageHeader title="Settings" subtitle="Goals, theme, and your data." />
+      <div className="space-y-6">
+        <GoalsCard />
+        <ThemeCard />
+        <DataCard />
+      </div>
     </>
   );
 }
