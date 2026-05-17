@@ -3,6 +3,7 @@ import { SectionTabs, type SectionTab } from "@/components/ui/SectionTabs";
 
 const TABS: SectionTab[] = [
   { href: "/gym/weight", label: "Weight" },
+  { href: "/gym/pushups", label: "Push-ups" },
 ];
 
 export default function GymLayout({
