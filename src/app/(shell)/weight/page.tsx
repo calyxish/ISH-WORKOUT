@@ -1,20 +1,22 @@
 import { PageHeader } from "@/components/ui/PageHeader";
-import { Card, CardTitle } from "@/components/ui/Card";
+import { WeightForm } from "@/components/weight/WeightForm";
+import { WeightDashboardHeader } from "@/components/weight/WeightDashboardHeader";
+import { WeightList } from "@/components/weight/WeightList";
+
+export const metadata = { title: "Weight" };
 
 export default function WeightPage() {
   return (
     <>
       <PageHeader
         title="Weight"
-        subtitle="Log weigh-ins, set a target, watch the trend."
+        subtitle="Log a weigh-in, set a target, see your history."
       />
-      <Card>
-        <CardTitle>Coming in Phase 3</CardTitle>
-        <p className="mt-2 text-sm text-text-muted">
-          Quick-entry form, history list, and target-weight setting land in the
-          next phases. The graph with time-range filters arrives in Phase 4.
-        </p>
-      </Card>
+      <div className="space-y-6">
+        <WeightForm />
+        <WeightDashboardHeader />
+        <WeightList />
+      </div>
     </>
   );
 }
