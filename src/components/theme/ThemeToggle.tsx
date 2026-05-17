@@ -1,51 +1,48 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-type Theme = "light" | "dark";
-const STORAGE_KEY = "ish:theme";
-
-function readTheme(): Theme {
-  if (typeof document === "undefined") return "light";
-  const attr = document.documentElement.getAttribute("data-theme");
-  return attr === "dark" ? "dark" : "light";
-}
-
-function applyTheme(t: Theme) {
-  document.documentElement.setAttribute("data-theme", t);
-  try {
-    localStorage.setItem(STORAGE_KEY, t);
-  } catch {}
-}
+import { useEffect } from "react";
+import { useValue } from "@/lib/hooks/useValue";
+import { useHasMounted } from "@/lib/hooks/useHasMounted";
+import {
+  applyChoice,
+  resolve,
+  SYSTEM_FALLBACK,
+  THEME_KEY,
+  type ResolvedTheme,
+  type ThemeChoice,
+} from "./theme";
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<Theme>("light");
-  const [mounted, setMounted] = useState(false);
+  const [choice] = useValue<ThemeChoice>(THEME_KEY, SYSTEM_FALLBACK);
+  const mounted = useHasMounted();
 
+  // Keep the DOM in sync when the user's OS preference changes while we're in
+  // "system" mode. The initial application happens in <ThemeScript> before
+  // paint.
   useEffect(() => {
-    setTheme(readTheme());
-    setMounted(true);
-  }, []);
+    if (choice !== "system") return;
+    const mql = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => applyChoice("system");
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, [choice]);
+
+  const resolved: ResolvedTheme = mounted ? resolve(choice) : "light";
 
   function toggle() {
-    const next: Theme = theme === "dark" ? "light" : "dark";
-    setTheme(next);
-    applyTheme(next);
+    // Sidebar toggle is a quick light↔dark override; "system" lives in Settings.
+    applyChoice(resolved === "dark" ? "light" : "dark");
   }
 
   return (
     <button
       type="button"
       onClick={toggle}
-      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+      aria-label={`Switch to ${resolved === "dark" ? "light" : "dark"} mode`}
       className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border-default bg-bg-surface text-text-primary transition hover:border-accent"
     >
       {mounted ? (
-        theme === "dark" ? (
-          <SunIcon />
-        ) : (
-          <MoonIcon />
-        )
+        resolved === "dark" ? <SunIcon /> : <MoonIcon />
       ) : (
         <span className="block h-4 w-4 rounded-full bg-text-muted/30" />
       )}

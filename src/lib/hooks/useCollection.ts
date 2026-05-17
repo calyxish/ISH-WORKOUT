@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import {
   getCollection,
   pushItem,
@@ -9,24 +9,27 @@ import {
   subscribe,
   updateItem,
 } from "@/lib/storage";
+import { useHasMounted } from "./useHasMounted";
+
+const EMPTY: readonly unknown[] = Object.freeze([]);
 
 /**
  * SSR-safe hook for an array stored in localStorage.
  *
- * Returns `hydrated: false` until the first client read completes — guard
- * "empty" UI on this flag so the empty-state doesn't flash before real data
- * loads on slow devices.
+ * `hydrated` flips to true once the client has mounted — gate skeleton UI on
+ * this rather than on `items.length === 0` so the empty state doesn't flash
+ * before the first localStorage read on slow devices.
  */
 export function useCollection<T extends { id: string }>(key: string) {
-  const [items, setItems] = useState<T[]>([]);
-  const [hydrated, setHydrated] = useState(false);
+  const sub = useCallback(
+    (cb: () => void) => subscribe(key, cb),
+    [key]
+  );
+  const getSnapshot = useCallback(() => getCollection<T>(key), [key]);
+  const getServerSnapshot = useCallback(() => EMPTY as T[], []);
 
-  useEffect(() => {
-    const read = () => setItems(getCollection<T>(key));
-    read();
-    setHydrated(true);
-    return subscribe(key, read);
-  }, [key]);
+  const items = useSyncExternalStore(sub, getSnapshot, getServerSnapshot);
+  const hydrated = useHasMounted();
 
   const add = useCallback((item: T) => pushItem<T>(key, item), [key]);
   const update = useCallback(

@@ -9,12 +9,13 @@ import { dayKey } from "@/lib/date";
 import type { WaterDay, Settings } from "@/types";
 
 const DEFAULT_GOAL = 8;
+const EMPTY_SETTINGS: Settings = {};
 
 export function WaterTile() {
   const { items, hydrated } = useCollection<WaterDay & { id: string }>(
     STORAGE_KEYS.water
   );
-  const [settings] = useValue<Settings>(STORAGE_KEYS.settings, {});
+  const [settings] = useValue<Settings>(STORAGE_KEYS.settings, EMPTY_SETTINGS);
 
   if (!hydrated) return <TileSkeleton href="/water" label="Water today" />;
 
