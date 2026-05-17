@@ -31,11 +31,21 @@ export type WaterDay = {
   cups: number;
 };
 
+export type PushupEntry = {
+  id: string;
+  /** Positive integer — reps in one logged set */
+  reps: number;
+  /** Unix ms timestamp of the set */
+  at: number;
+};
+
 export type Settings = {
   /** Target weight in kilograms */
   targetKg?: number;
   /** Daily water goal in cups */
   waterGoal?: number;
+  /** Daily push-up rep target */
+  dailyPushupGoal?: number;
 };
 
 export type Unit = "kg" | "lb";

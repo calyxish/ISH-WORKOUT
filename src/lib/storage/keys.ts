@@ -1,5 +1,6 @@
 export const STORAGE_KEYS = {
   weights: "ish:weights",
+  pushups: "ish:pushups",
   todos: "ish:todos",
   meals: "ish:meals",
   water: "ish:water",
