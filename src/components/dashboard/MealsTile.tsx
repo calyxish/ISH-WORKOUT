@@ -8,7 +8,7 @@ import type { MealEntry } from "@/types";
 
 export function MealsTile() {
   const { items, hydrated } = useCollection<MealEntry>(STORAGE_KEYS.meals);
-  if (!hydrated) return <TileSkeleton href="/meals" label="Meals today" />;
+  if (!hydrated) return <TileSkeleton href="/diet/meals" label="Meals today" />;
 
   const todays = items
     .filter((m) => isToday(m.at))
@@ -19,7 +19,7 @@ export function MealsTile() {
   if (count === 0) {
     return (
       <Tile
-        href="/meals"
+        href="/diet/meals"
         label="Meals today"
         primary={<span className="text-text-muted">None yet</span>}
         secondary="Log when you eat"
@@ -29,7 +29,7 @@ export function MealsTile() {
 
   return (
     <Tile
-      href="/meals"
+      href="/diet/meals"
       label="Meals today"
       primary={
         <>
