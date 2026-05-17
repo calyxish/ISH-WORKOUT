@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { PencilIcon, TrashIcon, CheckIcon, XIcon } from "@/components/ui/icons";
 import { formatDateTime } from "@/lib/date";
+import { toDatetimeLocal, fromDatetimeLocal } from "@/lib/datetime-local";
 import type { WeightEntry } from "@/types";
 
 type Props = {
@@ -12,19 +13,6 @@ type Props = {
   onUpdate: (patch: Partial<WeightEntry>) => void;
   onDelete: () => void;
 };
-
-function toDatetimeLocal(ms: number) {
-  const d = new Date(ms);
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
-    d.getHours()
-  )}:${pad(d.getMinutes())}`;
-}
-
-function fromDatetimeLocal(s: string): number | null {
-  const ms = new Date(s).getTime();
-  return Number.isFinite(ms) ? ms : null;
-}
 
 export function WeightRow({ entry, onUpdate, onDelete }: Props) {
   const [editing, setEditing] = useState(false);
