@@ -90,6 +90,7 @@ export function DataCard() {
           accept="application/json,.json"
           className="hidden"
           onChange={onImportFile}
+          aria-label="Import JSON file"
           aria-hidden
         />
         {confirmingClear ? (
