@@ -7,19 +7,24 @@ import { ProgressBar } from "@/components/ui/ProgressBar";
 import { CardTitle } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useCollection } from "@/lib/hooks/useCollection";
+import { useValue } from "@/lib/hooks/useValue";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
 import { getValue, setValue } from "@/lib/storage";
 import { dayKey } from "@/lib/date";
-import type { TodoItem } from "@/types";
+import type { Settings, TodoItem } from "@/types";
+
+const EMPTY_SETTINGS: Settings = {};
 
 export function TodayTodos() {
   const { items, hydrated, update, remove, replace } = useCollection<TodoItem>(
     STORAGE_KEYS.todos
   );
+  const [settings] = useValue<Settings>(STORAGE_KEYS.settings, EMPTY_SETTINGS);
   const today = dayKey();
 
   useEffect(() => {
     if (!hydrated) return;
+    if (settings.carryForwardTodos === false) return;
     const lastCarry = getValue<string>(STORAGE_KEYS.todosCarryDay);
     if (lastCarry === today) return;
 
@@ -32,7 +37,7 @@ export function TodayTodos() {
     }
 
     setValue(STORAGE_KEYS.todosCarryDay, today);
-  }, [hydrated, items, replace, today]);
+  }, [hydrated, items, replace, settings.carryForwardTodos, today]);
   const todays = useMemo(
     () =>
       items
