@@ -46,6 +46,8 @@ export type Settings = {
   waterGoal?: number;
   /** Daily push-up rep target */
   dailyPushupGoal?: number;
+  /** Carry unfinished todos into today */
+  carryForwardTodos?: boolean;
 };
 
 export type Unit = "kg" | "lb";

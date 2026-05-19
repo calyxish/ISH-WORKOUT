@@ -1,22 +1,43 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { TodoForm } from "./TodoForm";
 import { TodoRow } from "./TodoRow";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { CardTitle } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useCollection } from "@/lib/hooks/useCollection";
+import { useValue } from "@/lib/hooks/useValue";
 import { STORAGE_KEYS } from "@/lib/storage/keys";
+import { getValue, setValue } from "@/lib/storage";
 import { dayKey } from "@/lib/date";
-import type { TodoItem } from "@/types";
+import type { Settings, TodoItem } from "@/types";
+
+const EMPTY_SETTINGS: Settings = {};
 
 export function TodayTodos() {
-  const { items, hydrated, update, remove } = useCollection<TodoItem>(
+  const { items, hydrated, update, remove, replace } = useCollection<TodoItem>(
     STORAGE_KEYS.todos
   );
-
+  const [settings] = useValue<Settings>(STORAGE_KEYS.settings, EMPTY_SETTINGS);
   const today = dayKey();
+
+  useEffect(() => {
+    if (!hydrated) return;
+    if (settings.carryForwardTodos === false) return;
+    const lastCarry = getValue<string>(STORAGE_KEYS.todosCarryDay);
+    if (lastCarry === today) return;
+
+    const needsCarry = items.some((t) => t.day < today && !t.done);
+    if (needsCarry) {
+      const next = items.map((t) =>
+        t.day < today && !t.done ? { ...t, day: today } : t
+      );
+      replace(next);
+    }
+
+    setValue(STORAGE_KEYS.todosCarryDay, today);
+  }, [hydrated, items, replace, settings.carryForwardTodos, today]);
   const todays = useMemo(
     () =>
       items
