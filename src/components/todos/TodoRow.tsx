@@ -72,21 +72,27 @@ export function TodoRow({
 
   return (
     <li className="flex items-center gap-3 rounded-xl border border-border-default bg-bg-surface p-3">
-      <button
-        type="button"
-        role="checkbox"
-        aria-checked={todo.done}
-        aria-label={todo.done ? "Mark as not done" : "Mark as done"}
-        disabled={readOnly}
-        onClick={onToggle}
+      <label
         className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border transition ${
           todo.done
             ? "border-accent bg-accent text-[#111110]"
-            : "border-border-default bg-bg-input hover:border-accent"
-        } disabled:cursor-default disabled:hover:border-border-default`}
+            : "border-border-default bg-bg-input"
+        } ${
+          readOnly
+            ? "cursor-default"
+            : "cursor-pointer hover:border-accent"
+        }`}
       >
+        <input
+          type="checkbox"
+          checked={todo.done}
+          onChange={onToggle}
+          disabled={readOnly}
+          aria-label={todo.done ? "Mark as not done" : "Mark as done"}
+          className="sr-only"
+        />
         {todo.done && <CheckIcon className="h-4 w-4" />}
-      </button>
+      </label>
 
       <span
         className={`flex-1 text-base ${

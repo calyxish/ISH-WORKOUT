@@ -35,36 +35,36 @@ export function TodosCard() {
       <p className="mt-2 text-sm text-text-muted">
         Carry forward unfinished todos into today.
       </p>
-      <div
-        role="radiogroup"
-        aria-label="Carry forward todos"
-        className="mt-3 grid gap-2 sm:grid-cols-2"
-      >
+      <fieldset className="mt-3 grid gap-2 sm:grid-cols-2">
+        <legend className="sr-only">Carry forward todos</legend>
         {OPTIONS.map((opt) => {
           const active = mounted && enabled === opt.value;
           return (
-            <button
+            <label
               key={String(opt.value)}
-              type="button"
-              role="radio"
-              aria-checked={active}
-              onClick={() =>
-                setSettings({ ...settings, carryForwardTodos: opt.value })
-              }
               className={`flex flex-col items-start rounded-xl border p-3 text-left transition ${
                 active
                   ? "border-accent bg-accent/5"
                   : "border-border-default bg-bg-surface hover:border-accent"
               }`}
             >
+              <input
+                type="radio"
+                name="carry-forward-todos"
+                checked={active}
+                onChange={() =>
+                  setSettings({ ...settings, carryForwardTodos: opt.value })
+                }
+                className="sr-only"
+              />
               <span className="text-sm font-semibold text-text-primary">
                 {opt.label}
               </span>
               <span className="text-xs text-text-muted">{opt.hint}</span>
-            </button>
+            </label>
           );
         })}
-      </div>
+      </fieldset>
     </Card>
   );
 }
